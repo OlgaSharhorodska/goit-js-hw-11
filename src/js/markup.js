@@ -1,7 +1,7 @@
 import { fetchImage } from "./pixabay-api";
 
 export function createMarkup(webformatURL, largeImageURL, tags, likes, views, comments, downloads) {
-  loader.classList.replace('is-hidden', 'loader');
+  elements.loader.classList.replace('is-hidden', 'loader');
 
     return `<div class="photo-card">
   <a class="gallery_link" href="${largeImageURL}">
