@@ -14,7 +14,7 @@ elements.searchForm.addEventListener('submit', getCollection)
 
 function getCollection(evt) {
   evt.preventDefault();
-  const searchImg = evt.currentTarget.elements;
+  const { searchImg } = evt.currentTarget.elements;
 
   fetchImage(searchImg.value).then(resp => {
     if (resp.data.hits.length === 0) {
