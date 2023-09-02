@@ -19,6 +19,13 @@ elements.searchForm.addEventListener('submit', createMarkup)
 
 
 
+
+
+
+
+
+
+
 // function updateSelect(data) {
 //   fetchBreeds(data)
 //     .then(data => {

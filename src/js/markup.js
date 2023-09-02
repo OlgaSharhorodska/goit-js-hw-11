@@ -1,22 +1,17 @@
-export function createMarkup(evt) {
+import { fetchImage } from "./pixabay-api";
+
+export function createMarkup(webformatURL, largeImageURL, tags, likes, views, comments, downloads) {
   loader.classList.replace('is-hidden', 'loader');
-  breedSelect.classList.add('is-hidden');
-  catInfo.classList.add('is-hidden');
 
-  const breedId = evt.currentTarget.value;
-
-  fetchCatByBreed(breedId)
-    .then(data => {
-      loader.classList.replace('loader', 'is-hidden');
-      breedSelect.classList.remove('is-hidden');
-
-      const { url, breeds } = data[0];
-
-      catInfo.innerHTML = `<img src="${url}" alt="${breeds[0].name}" width="400"/>
-      <div class="box"><h2>${breeds[0].name}</h2>
-      <p>${breeds[0].description}</p>
-      <p><strong>Temperament:</strong> ${breeds[0].temperament}</p></div>`;
-      catInfo.classList.remove('is-hidden');
-    })
-    .catch(onError);
-}
+    return `<div class="photo-card">
+  <a class="gallery_link" href="${largeImageURL}">
+  <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+  <div class="info">
+    <p class="info-item"><b>Likes</b>${likes}</p>
+    <p class="info-item"><b>Views</b>${views}</p>
+    <p class="info-item"><b>Comments</b>${comments}</p>
+    <p class="info-item"><b>Downloads</b>${downloads}</p>
+  </div>
+  </a>
+</div>`;
+      }
