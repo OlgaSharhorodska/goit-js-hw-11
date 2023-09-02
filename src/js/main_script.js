@@ -1,7 +1,11 @@
 import { fetchBreeds, fetchCatByBreed } from "./cat-api";
-import SlimSelect from 'slim-select';
-import 'slim-select/dist/slimselect.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import axios from 'axios';
+axios.defaults.headers.common['x-api-key'] =
+  '39216416-ade7d4bf60cd1f5e815f694cd';
+
 
 const breedSelect = document.querySelector('.breed-select');
 const loader = document.querySelector('.loader');
@@ -59,6 +63,6 @@ function onError() {
   loader.classList.replace('loader', 'is-hidden');
 
   Notify.failure(
-    'Oops! Something went wrong! Try reloading the page or select another cat breed!'
+    'Sorry! There are no images matching your search query. Please try again.'
   );
 }
