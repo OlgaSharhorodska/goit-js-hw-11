@@ -1,66 +1,127 @@
-import { elements } from './elements';
-import { fetchImage } from './pixabay-api';
-import { createMarkup } from './markup';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { serviceSearchImg } from './pixabay-api';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import axios from 'axios';
-import Notiflix from 'notiflix';
-axios.defaults.headers.common['x-api-key'] =
-  '39216416-ade7d4bf60cd1f5e815f694cd';
 
+const refs = {
+  formEL: document.querySelector('#search-form'),
+  containerCards: document.querySelector('.gallery'),
+  btnLoadMor: document.querySelector('.load-more-hidden'),
+};
 
-elements.searchForm.addEventListener('submit', getCollection)
+let gallery = new SimpleLightbox('.gallery a');
+let currentPage = 1;
+let quantityImg = 0;
 
-function getCollection(evt) {
+refs.formEL.addEventListener('submit', onSubmitBtn);
+refs.containerCards.addEventListener('click', onClickCard);
+refs.btnLoadMor.addEventListener('click', onClickBtnLoadMor);
+
+function onSubmitBtn(evt) {
   evt.preventDefault();
-  const { searchImg } = evt.currentTarget.elements;
+  refs.containerCards.innerHTML = '';
+  refs.btnLoadMor.classList.replace('load-more', 'load-more-hidden');
 
-  fetchImage(searchImg.value).then(resp => {
-    if (resp.data.hits.length === 0) {
-      Notiflix.Notify.failure(
-        'Sorry! There are no images matching your search query. Please try again.'
-      );
-      return;
-    } Notiflix.Notify.success(`Hooray! We found ${resp.data.totalHits} images.`)
+  const valueSearch = evt.target.elements.searchQuery.value.trim();
+  localStorage.setItem('input-value', valueSearch);
+  let currentPage = 1;
+
+  if (!valueSearch) {
+    return Notify.failure('Enter your search details.');
   }
-  )
-  const collection = resp.data.hits.map(({
-          webformatURL,
-          largeImageURL,
-          tags,
-          likes,
-          views,
-          comments,
-          downloads,
-        }) =>
-          createMarkup(
-            webformatURL,
-            largeImageURL,
-            tags,
-            likes,
-            views,
-            comments,
-            downloads
-          )
-      )
-      .join('');
-    elements.gallery.innerHTML = collection;
+  serviceSearchImg(currentPage, valueSearch)
+    .then(data => {
+      quantityImg += data.hits.length;
+      createCards(data.hits);
+      refs.containerCards.insertAdjacentHTML(
+        'beforeend',
+        createCards(data.hits)
+      );
+      if (data.totalHits !== 0) {
+        Notify.info(`"Hooray! We found ${data.totalHits} images."`);
+      }
 
-  const instance = new SimpleLightbox('.gallery a', {
-    captionDelay: 250,
-  });
+      if (data.totalHits > quantityImg) {
+        refs.btnLoadMor.classList.replace('load-more-hidden', 'load-more');
+      }
 
+      const { height: cardHeight } = document
+        .querySelector('.gallery')
+        .firstElementChild.getBoundingClientRect();
+
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
+    })
+    .catch(error => {
+      Notify.failure(error.message);
+    })
+    .finally(() => {
+      gallery.refresh();
+    });
 }
 
+function onClickCard(evt) {
+  evt.preventDefault();
+  gallery.next();
+}
 
+function onClickBtnLoadMor() {
+  const inputValue = localStorage.getItem('input-value');
+  currentPage += 1;
+  serviceSearchImg(currentPage, inputValue)
+    .then(data => {
+      quantityImg += data.hits.length;
+      createCards(data.hits);
+      refs.containerCards.insertAdjacentHTML(
+        'beforeend',
+        createCards(data.hits)
+      );
+      if (data.totalHits <= quantityImg) {
+        refs.btnLoadMor.classList.replace('load-more', 'load-more-hidden');
+      }
+    })
+    .catch(error => {
+      Notify.failure(error.message);
+    })
+    .finally(() => {
+      gallery.refresh();
+    });
+}
 
-
-
-
-
-
-
-
-
-
+function createCards(arr) {
+  return arr
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => {
+        return `<div class ="photo-card"> 
+       <a class="gallery-link" href="${largeImageURL}"> 
+       <img src="${webformatURL}" alt="${tags}" loading="lazy" />
+       <div class="info">
+       <p class="info-item">
+         <b>Likes <span class= "item-text">${likes}</span></b>
+       </p>
+       <p class="info-item">
+         <b>Views <span class= "item-text">${views}</span></b>
+       </p>
+       <p class="info-item">
+         <b>Comments <span class= "item-text">${comments}</span></b>
+       </p>
+       <p class="info-item">
+         <b>Downloads <span class= "item-text">${downloads}</span></b>
+       </p>
+     </div>
+       </a>
+    </div>`;
+      }
+    )
+    .join('');
+}
