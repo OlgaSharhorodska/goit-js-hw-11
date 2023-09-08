@@ -106,13 +106,17 @@ input:focus {
 }
 
 .btn-search {
-  border-color: #2e2f42;
-  color: #2e2f42;
+  
   background: var(--color-btn);
   border-radius: 5px;
   margin-left: 20px;
-  transition: background-color 0.15s ease-in-out;
-  padding: 0px 10px;
+  color: whitesmoke;
+  padding: 0px 32px;
+  margin: 0 auto;
+  text-align: center;
+  text-decoration: none;
+  border-color: #7ba7ab;
+  margin-left: 20px;
 }
 
 .btn-search:focus,
@@ -136,50 +140,53 @@ input:focus {
   |                    Cітка з картками
   |==================================================
 */
-
-.gallery {
+.info{
   display: flex;
+  justify-content: space-around;
+}
+
+.info-item{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.gallery {
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-evenly;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: center;
-  padding: 0;
-  margin-bottom: 20px;
 }
-
 .photo-card {
-  flex-basis: calc((100% - 20px * (4 - 1)) / 4);
+  width: 300px;
   background-color: var(--bg-input);
-  border: 1 solid var(--bg-color);
-  border-radius: 4px;
-  transition: box-shadow 0.15s ease-in-out;
+  border-radius: 5%;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 }
-.gallery-link {
-  color: var(--color-text);
-}
-.photo-card:hover,
-.photo-card:focus {
-  box-shadow: 0 0 2px px #555;
-}
-
-.info {
-  /* display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  padding: 3px; */
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
+.thumb{
+  width: 300px;
+  height: 200px;
+  overflow: hidden;
+  
 }
 
-.info-item {
-  /* flex-basis: calc((100% - 5px * (4 - 1)) / 4); */
-  text-align: center;
+.gallery__image {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }
 
-.item-text {
-  font-weight: 500;
+.gallery__image:hover {
+  cursor: zoom-in;
 }
+
+.gallery__link {
+  display: block;
+  text-decoration: none;
+  height: 100%;
+} 
 
 /**
   |==================================================
@@ -200,10 +207,21 @@ input:focus {
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
+  margin-top: 20px;
 }
 
-.load-more-hidden {
-  display: none;
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+
+  white-space: nowrap;
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
 }
 
 .load-more:focus,
